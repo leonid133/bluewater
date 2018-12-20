@@ -14,6 +14,7 @@ pyBot = bot.Bot()
 slack = pyBot.client
 queue = DummyToiletQueue()
 last_state = 0
+last_id = 0
 
 app = Flask(__name__)
 
@@ -136,8 +137,10 @@ def sensor():
         data = json.loads(request.data)
         print data
         status = data.get('status', 0)
+        ident = data.get('id', 0)
         print status
-        if status is 1 and last_state is 0:
+        if status is 1 and last_state is 0 and last_id < ident:
+            last_id = ident
             queue.remove()
         last_state = status
     except:
