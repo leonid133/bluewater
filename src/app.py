@@ -7,6 +7,7 @@ import json
 import bot
 from queue import DummyToiletQueue
 from flask import Flask, request, make_response, render_template
+import requests
 
 pyBot = bot.Bot()
 slack = pyBot.client
@@ -60,7 +61,7 @@ def _event_handler(event_type, slack_event):
         }
         messag_from_user = json.dumps(in_message, indent=2)
         print messag_from_user
-        ml_request = request.post(pyBot.nlp_http, data=messag_from_user)
+        ml_request = requests.post(pyBot.nlp_http, data=messag_from_user)
 
         intent_labels = {
             'Book': book,
