@@ -70,7 +70,7 @@ def _event_handler(event_type, slack_event):
         }
         messag_from_user = json.dumps(in_message, indent=2)
         print messag_from_user
-        ml_request = requests.post(pyBot.nlp_http, data=messag_from_user)
+        ml_request = requests.post(pyBot.nlp_http, json=messag_from_user)
 
         intent_labels = {
             'Book': book,
