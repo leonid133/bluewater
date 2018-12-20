@@ -8,6 +8,7 @@ import bot
 from queue import DummyToiletQueue
 from flask import Flask, request, make_response, render_template
 import requests
+import sys
 
 pyBot = bot.Bot()
 slack = pyBot.client
