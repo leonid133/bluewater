@@ -12,6 +12,7 @@ import requests
 pyBot = bot.Bot()
 slack = pyBot.client
 queue = DummyToiletQueue()
+last_state = 0
 
 app = Flask(__name__)
 
@@ -134,8 +135,9 @@ def sensor():
         print data
         status = data.get('status', 0)
         print status
-        if status is 1:
+        if status is 1 and last_state is 0:
             queue.remove()
+        last_state = status
     except:
         print 'error'
     return make_response("Ok.", 200, )
