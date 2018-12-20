@@ -70,8 +70,8 @@ def _event_handler(event_type, slack_event):
             'OMG': omg,
             'Other': other
         }
-
-        dialect = intent_labels.get(ml_request.get("INTENT_LABELS"))
+        ml_request_json = json.loads(ml_request.data)
+        dialect = intent_labels.get(ml_request_json.get("INTENT_LABELS"))
 
         dialect(user_id, channel)
 
