@@ -134,7 +134,7 @@ def sensor():
         print data
         status = data.get('status', 0)
         print status
-        if status is 0:
+        if status is 1:
             queue.remove()
     except:
         print 'error'
