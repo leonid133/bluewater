@@ -99,7 +99,7 @@ def _event_handler(event_type, slack_event):
     return make_response(message, 200, {"X-Slack-No-Retry": 1})
 
 @app.route("/queue", methods=["GET"])
-def queue():
+def get_queue():
     return make_response(json.dumps(queue.q), 200, {'Content-Type': 'application/json'})
 
 @app.route("/welcome", methods=["POST"])
