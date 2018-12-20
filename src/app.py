@@ -5,10 +5,12 @@ A routing layer for the onboarding bot tutorial built using
 """
 import json
 import bot
+from queue import DummyToiletQueue
 from flask import Flask, request, make_response, render_template
 
 pyBot = bot.Bot()
 slack = pyBot.client
+queue = DummyToiletQueue()
 
 app = Flask(__name__)
 
