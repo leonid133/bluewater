@@ -3,7 +3,7 @@ def repository = 'leonid133/bluewater'
 def buildAndPublishReleaseFunction = {
     //Buid app
     def curVersion = getVersion()
-    sh "docker build -t docker.hydrosphere.io/bluewater ."
+    sh "docker build -t docker.hydrosphere.io/bluewater:${curVersion} ."
 }
 
 pipelineCommon(
