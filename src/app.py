@@ -17,17 +17,26 @@ app = Flask(__name__)
 
 
 def book(user_id, channel):
-    message = "<@%s> You booked! :tada:" % user_id
+    if user_id in queue.q:
+        message = "<@%s> You are pidor and you are already in the queue!"
+    else:
+        queue.add(user_id)
+        st = queue.get_my_status(user_id)
+        message = "<@%s> You booked! You're the %d's in the queue :tada:" % (user_id, st)
     pyBot.direct_message(message, channel)
 
 
 def check_status(user_id, channel):
-    message = "<@%s> You will be get status! :tada:" % user_id
+    st = queue.get_my_status(user_id)
+    if st != -1:
+        message = "<@%s> You're the %s in the queue :tada:" % (user_id, st)
+    else:
+        message = "<@%s> You're not in the queue (because you are pidor)" % user_id
     pyBot.direct_message(message, channel)
 
 
 def go_to_hell(user_id, channel):
-    message = "<@%s> Fuck You! :tada:" % user_id
+    message = "<@%s> Fuck You! Nu ty i pidor! :tada:" % user_id
     pyBot.direct_message(message, channel)
 
 
@@ -37,7 +46,7 @@ def omg(user_id, channel):
 
 
 def other(user_id, channel):
-    message = "<@%s> other! :tada:" % user_id
+    message = "<@%s> Nu ya hui znaet :tada:" % user_id
     pyBot.direct_message(message, channel)
 
 
