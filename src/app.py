@@ -139,7 +139,7 @@ def sensor():
             queue.remove()
         last_state = status
     except:
-        print 'error'
+        print 'error', sys.exc_info()[0]
     return make_response("Ok.", 200, )
 
 
