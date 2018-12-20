@@ -49,7 +49,6 @@ def other(user_id, channel):
     message = "<@%s> Nu ya hui znaet :tada:" % user_id
     pyBot.direct_message(message, channel)
 
-
 def _event_handler(event_type, slack_event):
     team_id = slack_event["team_id"]
     user_id = slack_event["event"].get("user")
@@ -99,6 +98,9 @@ def _event_handler(event_type, slack_event):
     message = "You have not added an event handler for the %s" % event_type
     return make_response(message, 200, {"X-Slack-No-Retry": 1})
 
+@app.route("/queue", methods=["GET"])
+def queue():
+    return make_response(json.dumps(queue.q), 200, {'Content-Type': 'application/json'})
 
 @app.route("/welcome", methods=["POST"])
 def welcome():
