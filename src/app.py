@@ -132,6 +132,7 @@ def thanks():
 @app.route("/sensor", methods=["POST"])
 def sensor():
     global last_state
+    global last_id
     # print request.__dict__
     try:
         data = json.loads(request.data)
