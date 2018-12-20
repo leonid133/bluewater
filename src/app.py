@@ -79,6 +79,7 @@ def _event_handler(event_type, slack_event):
             'OMG': omg,
             'Other': other
         }
+        print(r.text)
         dialect = intent_labels.get(ml_request.json().get("INTENT_LABELS"))
 
         dialect(user_id, channel)
