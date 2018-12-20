@@ -13,6 +13,31 @@ slack = pyBot.client
 app = Flask(__name__)
 
 
+def book(user_id, channel):
+    message = "<@%s> You booked! :tada:" % user_id
+    pyBot.direct_message(message, channel)
+
+
+def check_status(user_id, channel):
+    message = "<@%s> You will be get status! :tada:" % user_id
+    pyBot.direct_message(message, channel)
+
+
+def go_to_hell(user_id, channel):
+    message = "<@%s> Fuck You! :tada:" % user_id
+    pyBot.direct_message(message, channel)
+
+
+def omg(user_id, channel):
+    message = "<@%s> OMG! :tada:" % user_id
+    pyBot.direct_message(message, channel)
+
+
+def other(user_id, channel):
+    message = "<@%s> other! :tada:" % user_id
+    pyBot.direct_message(message, channel)
+
+
 def _event_handler(event_type, slack_event):
     team_id = slack_event["team_id"]
     user_id = slack_event["event"].get("user")
@@ -22,8 +47,33 @@ def _event_handler(event_type, slack_event):
         token = slack_event["token"]
 
         channel = slack_event["event"].get("channel")
-        msg = "Hello <@%s>! I'll call you!" % user_id
-        pyBot.direct_message(msg, channel)
+
+        # curl - X
+        # POST - -header
+        # 'Content-Type: application/json' - -header
+        # 'Accept: application/json' - d
+        # '{ "msg": [ "foo" ] }' 'https://dev.k8s.hydrosphere.io/gateway/applications/bluewater-nlp/bluewater-nlp'
+        in_message = {
+            "msg": [slack_event.get("event", {}).get("text", "")]
+        }
+        messag_from_user = json.dumps(in_message, indent=2)
+        print messag_from_user
+        ml_request = request.post(pyBot.nlp_http, data=messag_from_user)
+
+        intent_labels = {
+            'Book': book,
+            'CheckStatus': check_status,
+            'GoToHell': go_to_hell,
+            'OMG': omg,
+            'Other': other
+        }
+
+        dialect = intent_labels.get(ml_request.get("INTENT_LABELS"))
+
+        dialect(user_id, channel)
+
+        # msg = "Hello <@%s>! I'll call you!" % user_id
+        # pyBot.direct_message(msg, channel)
 
         who_whanna_go = {
             'token': token,
@@ -37,13 +87,16 @@ def _event_handler(event_type, slack_event):
     message = "You have not added an event handler for the %s" % event_type
     return make_response(message, 200, {"X-Slack-No-Retry": 1})
 
+
 @app.route("/welcome", methods=["POST"])
 def welcome():
     return make_response("Hey-hey!")
 
+
 @app.route("/health", methods=["GET"])
 def health():
     return make_response("I'm healthy", 200)
+
 
 @app.route("/install", methods=["GET", "POST"])
 def pre_install():
@@ -95,6 +148,8 @@ def timetogo():
 @app.route("/listening", methods=["GET", "POST"])
 def hears():
     slack_event = json.loads(request.data)
+
+    print slack_event
 
     if "challenge" in slack_event:
         return make_response(slack_event["challenge"], 200, {"content_type":
