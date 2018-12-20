@@ -57,7 +57,7 @@ def _event_handler(event_type, slack_event):
     user_id = slack_event["event"].get("user")
 
     if event_type == "message" and user_id is not None:
-        print slack_event
+        # print slack_event
         token = slack_event["token"]
 
         channel = slack_event["event"].get("channel")
@@ -81,7 +81,7 @@ def _event_handler(event_type, slack_event):
             'OMG': omg,
             'Other': other
         }
-        print(ml_request.text)
+        # print(ml_request.text)
         dialect = intent_labels.get(ml_request.json().get("intent")[0])
 
         dialect(user_id, channel)
@@ -95,7 +95,7 @@ def _event_handler(event_type, slack_event):
             'user_id': user_id,
             'channel': channel
         }
-        print json.dumps(who_whanna_go, indent=2)
+        # print json.dumps(who_whanna_go, indent=2)
         return make_response("!!!!",
                              200, )
     message = "You have not added an event handler for the %s" % event_type
@@ -136,11 +136,12 @@ def sensor():
     # print request.__dict__
     try:
         data = json.loads(request.data)
-        print data
+#        print data
         status = data.get('status', 0)
         ident = data.get('id', 0)
-        print status
+#        print status
         if status is 1 and last_state is 0 and last_id < ident:
+            print "removing from queue because (last_id=%d && id=%d), (last_state=%d && status=%d)" % (last_id, ident, last_state, status)
             last_id = ident
             queue.remove()
         last_state = status
@@ -152,7 +153,7 @@ def sensor():
 @app.route("/timetogo", methods=["GET", "POST"])
 def timetogo():
 
-    print request.__dict__
+    # print request.__dict__
     try:
         queue_event = json.loads(request.data)
         user_id = queue_event.get('user_id', "")
