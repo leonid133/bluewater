@@ -1,0 +1,6 @@
+usePassword: false
+
+master:
+  persistence:
+    enabled: true
+
