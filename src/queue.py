@@ -22,7 +22,7 @@ class DummyToiletQueue:
 
     def remove(self):
         try:
-            q = self.redis.get()
+            q = self.get()
             value = q.pop(0)
             self.redis.__set(q)
             return value
