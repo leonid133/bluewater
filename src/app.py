@@ -20,7 +20,7 @@ app = Flask(__name__)
 
 
 def book(user_id, channel):
-    if user_id in queue.__get():
+    if user_id in queue.get():
         message = "<@%s> You are pidor and you are already in the queue!" % user_id
     else:
         queue.add(user_id)
@@ -103,7 +103,7 @@ def _event_handler(event_type, slack_event):
 
 @app.route("/queue", methods=["GET"])
 def get_queue():
-    return make_response(json.dumps(queue.__get()), 200, {'Content-Type': 'application/json'})
+    return make_response(json.dumps(queue.get()), 200, {'Content-Type': 'application/json'})
 
 @app.route("/welcome", methods=["POST"])
 def welcome():
