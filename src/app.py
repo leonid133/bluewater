@@ -145,7 +145,7 @@ def sensor():
             last_id = ident
             queue.remove()
         last_state = status
-    except e:
+    except Exception as e:
         print 'error', sys.exc_info()[0]
         raise e
     return make_response("Ok.", 200, )
