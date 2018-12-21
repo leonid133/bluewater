@@ -25,6 +25,7 @@ class DummyToiletQueue:
             q = self.redis.__get()
             value = q.pop(0)
             self.redis.__set(q)
+            return value
         except IndexError:
             return -1
 
