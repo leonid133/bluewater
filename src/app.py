@@ -141,7 +141,7 @@ def sensor():
         ident = data.get('id', 0)
 #        print status
         if status is 1 and last_state is 0 and last_id < ident:
-            app.logger.info("removing from queue because (last_id=%d && id=%d), (last_state=%d && status=%d)", last_id, ident, last_state, status)
+            print "removing from queue because (last_id=%d && id=%d), (last_state=%d && status=%d)" % (last_id, ident, last_state, status)
             last_id = ident
             queue.remove()
         last_state = status
