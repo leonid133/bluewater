@@ -20,7 +20,7 @@ app = Flask(__name__)
 
 
 def book(user_id, channel):
-    if user_id in queue.q:
+    if user_id in queue.__get():
         message = "<@%s> You are pidor and you are already in the queue!" % user_id
     else:
         queue.add(user_id)
