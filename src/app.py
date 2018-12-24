@@ -20,17 +20,19 @@ app = Flask(__name__)
 
 
 def book(user_id, channel):
-    if user_id in queue.get():
+    global queue
+    if channel in queue.get():
         message = "<@%s> You are pidor and you are already in the queue!" % user_id
     else:
-        queue.add(user_id)
-        st = queue.get_my_status(user_id)
+        queue.add(channel)
+        st = queue.get_my_status(channel)
         message = "<@%s> You booked! You're the %d's in the queue :tada:" % (user_id, st)
     pyBot.direct_message(message, channel)
 
 
 def check_status(user_id, channel):
-    st = queue.get_my_status(user_id)
+    global queue
+    st = queue.get_my_status(channel)
     if st != -1:
         message = "<@%s> You're the %s in the queue :tada:" % (user_id, st)
     else:
@@ -133,6 +135,7 @@ def thanks():
 def sensor():
     global last_state
     global last_id
+    global queue
     # print request.__dict__
     try:
         data = json.loads(request.data)
@@ -143,7 +146,9 @@ def sensor():
         if status is 1 and last_state is 0 and last_id < ident:
             print "removing from queue because (last_id=%d && id=%d), (last_state=%d && status=%d)" % (last_id, ident, last_state, status)
             last_id = ident
-            queue.remove()
+            channel = queue.remove()
+            message = "go go go"
+            pyBot.direct_message(message, channel)
         last_state = status
     except Exception as e:
         print 'error', sys.exc_info()[0]
