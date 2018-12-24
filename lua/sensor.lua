@@ -13,7 +13,7 @@ function interrupt_f(level, stamp)
 gpio.trig(GPIO_PIN_F)
 sensor_f = gpio.read(GPIO_PIN_F)
 sensor_s = gpio.read(GPIO_PIN_S)
-    if (sensor_s==1 and sensor_f==1) then
+    if (sensor_f==1) then
         global_status = 0
     end
 dofile(http_post)
@@ -30,7 +30,7 @@ function interrupt_s(level, stamp)
 gpio.trig(GPIO_PIN_S)
 sensor_f = gpio.read(GPIO_PIN_F)
 sensor_s = gpio.read(GPIO_PIN_S)
-    if (sensor_s==1 and sensor_f==1) then
+    if (sensor_s==1) then
         global_status = 1
     end
 dofile(http_post)
