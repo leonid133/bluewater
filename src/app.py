@@ -149,7 +149,10 @@ def sensor():
             channel = queue.remove()
             message = "go go go"
             pyBot.direct_message(message, channel)
-        last_state = status
+            last_state = status
+        elif last_id < ident:
+            last_state = status
+
     except Exception as e:
         print 'error', sys.exc_info()[0]
         raise e
