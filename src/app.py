@@ -64,21 +64,11 @@ def _event_handler(event_type, slack_event):
     user_id = slack_event["event"].get("user")
 
     if event_type == "message" and user_id is not None:
-        # print slack_event
         token = slack_event["token"]
-
         channel = slack_event["event"].get("channel")
-
-        # curl - X
-        # POST - -header
-        # 'Content-Type: application/json' - -header
-        # 'Accept: application/json' - d
-        # '{ "msg": [ "foo" ] }' 'https://dev.k8s.hydrosphere.io/gateway/applications/bluewater-nlp/bluewater-nlp'
         in_message = {
             "msg": [slack_event.get("event", {}).get("text", "")]
         }
-        #messag_from_user = json.dumps(in_message, indent=2)
-        #print messag_from_user
         ml_request = requests.post(pyBot.nlp_http, json=in_message)
 
         intent_labels = {
@@ -88,13 +78,8 @@ def _event_handler(event_type, slack_event):
             'OMG': omg,
             'Other': other
         }
-        # print(ml_request.text)
         dialect = intent_labels.get(ml_request.json().get("intent")[0])
-
         dialect(user_id, channel)
-
-        # msg = "Hello <@%s>! I'll call you!" % user_id
-        # pyBot.direct_message(msg, channel)
 
         who_whanna_go = {
             'token': token,
@@ -102,9 +87,9 @@ def _event_handler(event_type, slack_event):
             'user_id': user_id,
             'channel': channel
         }
-        # print json.dumps(who_whanna_go, indent=2)
-        return make_response("!!!!",
-                             200, )
+        print json.dumps(who_whanna_go, indent=2)
+
+        return make_response("!!!!", 200, )
     message = "You have not added an event handler for the %s" % event_type
     return make_response(message, 200, {"X-Slack-No-Retry": 1})
 
@@ -149,14 +134,11 @@ def sensor():
     global busy_count
     global last_free_count
     global last_busy_count
-    # print request.__dict__
     try:
         data = json.loads(request.data)
-#        print data
         status = data.get('status', 0)
         ident = data.get('id', 0)
-#        print status
-        if status is 1 and last_state is 0 and last_id < ident:
+        if ((busy_count > 3600) or (free_count > 120) or (status is 1 and last_state is 0)) and last_id < ident:
             print "removing from queue because (last_id=%d && id=%d), (last_state=%d && status=%d)" % (last_id, ident, last_state, status)
             last_id = ident
             channel = queue.remove()
