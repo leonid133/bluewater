@@ -15,6 +15,10 @@ slack = pyBot.client
 queue = DummyToiletQueue()
 last_state = 0
 last_id = 0
+free_count = 0
+busy_count = 0
+last_free_count = 0
+last_busy_count = 0
 
 app = Flask(__name__)
 
@@ -53,6 +57,7 @@ def omg(user_id, channel):
 def other(user_id, channel):
     message = "<@%s> Nu ya hui znaet :tada:" % user_id
     pyBot.direct_message(message, channel)
+
 
 def _event_handler(event_type, slack_event):
     team_id = slack_event["team_id"]
@@ -103,12 +108,16 @@ def _event_handler(event_type, slack_event):
     message = "You have not added an event handler for the %s" % event_type
     return make_response(message, 200, {"X-Slack-No-Retry": 1})
 
+
 @app.route("/queue", methods=["GET"])
 def get_queue():
     return make_response(json.dumps(queue.get()), 200, {'Content-Type': 'application/json'})
 
+
 @app.route("/welcome", methods=["POST"])
 def welcome():
+    global last_id
+    last_id = 0
     return make_response("Hey-hey!")
 
 
@@ -136,6 +145,10 @@ def sensor():
     global last_state
     global last_id
     global queue
+    global free_count
+    global busy_count
+    global last_free_count
+    global last_busy_count
     # print request.__dict__
     try:
         data = json.loads(request.data)
@@ -149,6 +162,16 @@ def sensor():
             channel = queue.remove()
             message = "go go go"
             pyBot.direct_message(message, channel)
+            last_free_count = free_count
+            last_busy_count = busy_count
+            free_count = 0
+            busy_count = 0
+            last_state = status
+        elif status is 1 and last_state is 1 and last_id < ident:
+            free_count = free_count + 1
+            last_state = status
+        elif status is 0 and last_state is 0 and last_id < ident:
+            busy_count = busy_count + 1
             last_state = status
         elif last_id < ident:
             last_state = status
@@ -159,23 +182,25 @@ def sensor():
     return make_response("Ok.", 200, )
 
 
-@app.route("/timetogo", methods=["GET", "POST"])
-def timetogo():
+@app.route("/get_info", methods=["GET"])
+def get_info():
+    global last_state
+    global last_id
+    global free_count
+    global busy_count
+    global last_free_count
+    global last_busy_count
 
-    # print request.__dict__
-    try:
-        queue_event = json.loads(request.data)
-        user_id = queue_event.get('user_id', "")
-        channel = queue_event.get('channel', "")
-    except:
-        # team_id = request.args.get('team_id')
-        user_id = request.args.get('user_id')
-        channel = request.args.get('channel')
+    info_msg = {
+        'last_state': last_state,
+        'last_id': last_id,
+        'free_count': free_count,
+        'busy_count': busy_count,
+        'last_free_count': last_free_count,
+        'last_busy_count': last_busy_count
+    }
 
-    message = "Time to go <@%s>! :tada:" % user_id
-    pyBot.direct_message(message, channel)
-    return make_response("Ok.",
-                         200, )
+    return make_response(json.dumps(info_msg), 200, {'Content-Type': 'application/json'})
 
 
 @app.route("/listening", methods=["GET", "POST"])
