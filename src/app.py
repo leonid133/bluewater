@@ -138,7 +138,7 @@ def sensor():
         data = json.loads(request.data)
         status = data.get('status', 0)
         ident = data.get('id', 0)
-        if ((busy_count > 3600) or (free_count > 120) or (status is 1 and last_state is 0)) and last_id < ident:
+        if ((busy_count > 3600) or (free_count > 20) or (status is 1 and last_state is 0)) and last_id < ident:
             print "removing from queue because (last_id=%d && id=%d), (last_state=%d && status=%d)" % (last_id, ident, last_state, status)
             last_id = ident
             channel = queue.remove()
