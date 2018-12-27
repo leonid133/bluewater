@@ -28,9 +28,9 @@ class SensorsData:
 
     def get(self, offset, limit, pattern):
         try:
-            result = []
+            result = {}
             for key in self.scan_keys(offset, limit, pattern):
-                result.extend(self.redis.hmget(key))
+                result[key] = (self.redis.hgetall(key))
 
             return result
         except:
