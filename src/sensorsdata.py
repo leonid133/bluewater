@@ -29,7 +29,7 @@ class SensorsData:
     def get(self, offset, limit, pattern):
         try:
             result = {}
-            keys = self.scan_keys(pattern=pattern)[int(offset):int(offset+limit)]
+            keys = self.scan_keys(pattern=pattern)[int(offset):(int(offset)+int(limit))]
             for key in keys:
                 result[key] = (self.redis.hgetall(key))
 
