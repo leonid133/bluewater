@@ -9,7 +9,7 @@ from queue import DummyToiletQueue
 from flask import Flask, request, make_response, render_template
 import requests
 import sys
-# from sensorsdata import SensorsData
+from sensorsdata import SensorsData
 
 pyBot = bot.Bot()
 slack = pyBot.client
@@ -21,7 +21,7 @@ busy_count = 0
 last_free_count = 0
 last_busy_count = 0
 
-# sensorsData = SensorsData()
+sensorsData = SensorsData()
 
 app = Flask(__name__)
 
@@ -161,7 +161,7 @@ def sensor():
         elif last_id < ident:
             last_state = status
 
-        # sensorsData.append(sec=data.get('sec', 0), usec=data.get('usec', 0), data=data)
+        sensorsData.append(sec=data.get('sec', 0), usec=data.get('usec', 0), data=data)
 
     except Exception as e:
         print 'error', sys.exc_info()[0]
