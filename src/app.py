@@ -9,7 +9,7 @@ from queue import DummyToiletQueue
 from flask import Flask, request, make_response, render_template
 import requests
 import sys
-from sensorsdata import SensorsData
+# from sensorsdata import SensorsData
 
 pyBot = bot.Bot()
 slack = pyBot.client
@@ -21,7 +21,7 @@ busy_count = 0
 last_free_count = 0
 last_busy_count = 0
 
-sensorsData = SensorsData()
+# sensorsData = SensorsData()
 
 app = Flask(__name__)
 
@@ -161,7 +161,7 @@ def sensor():
         elif last_id < ident:
             last_state = status
 
-        sensorsData.append(sec=data.get('sec', 0), usec=data.get('usec', 0), data=data)
+        # sensorsData.append(sec=data.get('sec', 0), usec=data.get('usec', 0), data=data)
 
     except Exception as e:
         print 'error', sys.exc_info()[0]
@@ -169,22 +169,22 @@ def sensor():
     return make_response("Ok.", 200, )
 
 
-@app.route("/clean_sensors_data", method=["GET"])
-def clean_sensors():
-    sensorsData.delete()
-    return make_response("Clean: 'success'", 200, {'Content-Type': 'application/json'})
-
-
-@app.route("/get_sensors_data", method=["GET"])
-def get_sensors_data():
-    offset = request.args.get('offset', 0)
-    limit = request.args.get('limit', 100)
-
-    data = []
-    for row in sensorsData.get(offset=offset, limit=limit):
-        data.append(row)
-
-    return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
+# @app.route("/clean_sensors_data", method=["GET"])
+# def clean_sensors():
+#     sensorsData.delete()
+#     return make_response("Clean: 'success'", 200, {'Content-Type': 'application/json'})
+#
+#
+# @app.route("/get_sensors_data", method=["GET"])
+# def get_sensors_data():
+#     offset = request.args.get('offset', 0)
+#     limit = request.args.get('limit', 100)
+#
+#     data = []
+#     for row in sensorsData.get(offset=offset, limit=limit):
+#         data.append(row)
+#
+#     return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
 
 
 @app.route("/get_info", methods=["GET"])
