@@ -18,7 +18,7 @@ class SensorsData:
 
     def get(self, offset=0, limit=100):
         try:
-            keys = self.redis.scan(cursor=offset, match='sensors_*', count=limit)
+            cursor_number, keys = self.redis.scan(cursor=offset, match='sensors_*', count=limit)
             result = []
             for key in keys:
                 result.append(json.loads(self.redis.get(key)))
