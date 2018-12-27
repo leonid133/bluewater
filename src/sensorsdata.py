@@ -18,8 +18,10 @@ class SensorsData:
 
     def get(self, offset=0, limit=100):
         try:
-            keys = self.redis.scan_iter('sensors_*')[offset:offset + limit]
+            keys = self.redis.scan(cursor=offset, match='sensors_*', count=limit)
+            result = []
             for key in keys:
-                yield json.loads(self.redis.get(key))
+                result.append(json.loads(self.redis.get(key)))
+            return result
         except:
-            pass
+            return []

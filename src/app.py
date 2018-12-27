@@ -175,16 +175,14 @@ def sensor():
 #     return make_response("Clean: 'success'", 200, {'Content-Type': 'application/json'})
 #
 #
-# @app.route("/get_sensors_data", method=["GET"])
-# def get_sensors_data():
-#     offset = request.args.get('offset', 0)
-#     limit = request.args.get('limit', 100)
-#
-#     data = []
-#     for row in sensorsData.get(offset=offset, limit=limit):
-#         data.append(row)
-#
-#     return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
+@app.route("/get_sensors_data", method=["GET"])
+def get_sensors_data():
+    offset = request.args.get('offset', 0)
+    limit = request.args.get('limit', 100)
+
+    data = sensorsData.get(offset=offset, limit=limit)
+
+    return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
 
 
 @app.route("/get_info", methods=["GET"])
