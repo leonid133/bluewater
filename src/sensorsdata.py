@@ -20,7 +20,7 @@ class SensorsData:
         result = []
         cur, keys = self.redis.scan(cursor=offset, match=pattern, count=limit)
         result.extend(keys)
-        while cur != offset:
+        while cur != 0:
             cur, keys = self.redis.scan(cursor=cur, match=pattern, count=limit)
             result.extend(keys)
 
