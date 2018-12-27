@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import redis
 import json
-from itertools import izip_longest, islice
 
 
 class SensorsData:
@@ -13,17 +12,13 @@ class SensorsData:
         key = "sensors_%s_%s" % (sec, usec)
         self.redis.set(key, json.dumps(data))
 
-    def __batcher(self, iterable, n):
-        args = [iter(iterable)] * n
-        return izip_longest(*args)
-
     def delete(self):
-        for keybatch in self.__batcher(self.redis.scan_iter('sensors_*'), 500):
-            self.redis.delete(*keybatch)
+        keys = self.redis.scan_iter('sensors_*')
+        self.redis.delete(*keys)
 
     def get(self, offset=0, limit=100):
         try:
-            keys = islice(self.redis.scan_iter('sensors_*'), offset, offset + limit, 1)
+            keys = self.redis.scan_iter('sensors_*')[offset:offset + limit]
             for key in keys:
                 yield json.loads(self.redis.get(key))
         except:
