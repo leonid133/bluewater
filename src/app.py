@@ -169,7 +169,7 @@ def sensor():
     return make_response("Ok.", 200, )
 
 
-@app.route("/get_sensors", method=["GET"])
+@app.route("/get_sensors", methods=["GET"])
 def get_sensors():
     try:
         offset = request.args.get('offset', 0)
