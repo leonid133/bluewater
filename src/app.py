@@ -179,8 +179,9 @@ def sensor():
 def get_sensors_data():
     offset = request.args.get('offset', 0)
     limit = request.args.get('limit', 100)
+    pattern = request.args.get('pattern', "sensors*")
 
-    data = sensorsData.get(offset=offset, limit=limit)
+    data = sensorsData.get(offset=offset, limit=limit, pattern=pattern)
 
     return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
 

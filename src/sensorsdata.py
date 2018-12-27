@@ -16,12 +16,15 @@ class SensorsData:
         keys = self.redis.scan_iter('sensors_*')
         self.redis.delete(*keys)
 
-    def get(self, offset=0, limit=100):
+    def get(self, offset=0, limit=100, pattern="sensors*"):
         try:
-            cursor_number, keys = self.redis.scan(cursor=offset, match='sensors_*', count=limit)
             result = []
-            for key in keys:
-                result.append(json.loads(self.redis.get(key)))
+            cur, keys = self.redis.scan(cursor=offset, match=pattern, count=limit)
+            result.extend(keys)
+            while cur != offset:
+                cur, keys = self.redis.scan(cursor=cur, match=pattern, count=limit)
+                result.extend(keys)
+
             return result
         except:
             return []
