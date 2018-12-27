@@ -168,7 +168,6 @@ def sensor():
         raise e
     return make_response("Ok.", 200, )
 
-
 # @app.route("/clean_sensors_data", method=["GET"])
 # def clean_sensors():
 #     sensorsData.delete()
@@ -177,11 +176,13 @@ def sensor():
 #
 @app.route("/get_sensors_data", method=["GET"])
 def get_sensors_data():
-    offset = request.args.get('offset', 0)
-    limit = request.args.get('limit', 100)
-    pattern = request.args.get('pattern', "sensors*")
-
-    data = sensorsData.get(offset=offset, limit=limit, pattern=pattern)
+    try:
+        offset = request.args.get('offset', 0)
+        limit = request.args.get('limit', 100)
+        pattern = request.args.get('pattern', "sensors*")
+        data = sensorsData.get(offset=offset, limit=limit, pattern=pattern)
+    except:
+        data = []
 
     return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
 
