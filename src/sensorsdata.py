@@ -29,10 +29,10 @@ class SensorsData:
     def get(self, offset, limit, pattern):
         try:
             result = {}
-            keys = self.scan_keys(pattern=pattern)[offset:limit]
+            keys = self.scan_keys(pattern=pattern)[offset:offset+limit]
             for key in keys:
                 result[key] = (self.redis.hgetall(key))
 
             return result
-        except:
-            return []
+        except Exception as e:
+            return ['error', e.message]
