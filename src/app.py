@@ -168,23 +168,17 @@ def sensor():
         raise e
     return make_response("Ok.", 200, )
 
-# @app.route("/clean_sensors_data", method=["GET"])
-# def clean_sensors():
-#     sensorsData.delete()
-#     return make_response("Clean: 'success'", 200, {'Content-Type': 'application/json'})
-#
-#
-@app.route("/get_sensors_data", method=["GET"])
-def get_sensors_data():
+
+@app.route("/get_sensors", method=["GET"])
+def get_sensors():
     try:
         offset = request.args.get('offset', 0)
         limit = request.args.get('limit', 100)
         pattern = request.args.get('pattern', "sensors*")
         data = sensorsData.get(offset=offset, limit=limit, pattern=pattern)
-    except:
-        data = []
-
-    return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
+        return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
+    except Exception as e:
+        return make_response("oops: %s" % sys.exc_info()[0], 200, {'Content-Type': 'application/json'})
 
 
 @app.route("/get_info", methods=["GET"])
