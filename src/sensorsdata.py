@@ -10,7 +10,7 @@ class SensorsData:
 
     def append(self, sec, usec, data):
         key = "sensors_%s_%s" % (sec, usec)
-        self.redis.set(key, json.dumps(data))
+        self.redis.hmset(key, data)
 
     def delete(self):
         keys = self.redis.scan_iter('sensors_*')
@@ -30,7 +30,7 @@ class SensorsData:
         try:
             result = []
             for key in self.scan_keys(offset, limit, pattern):
-                result.extend(json.loads(self.redis.get(key)))
+                result.extend(self.redis.hmget(key))
 
             return result
         except:

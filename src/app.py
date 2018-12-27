@@ -169,6 +169,12 @@ def sensor():
     return make_response("Ok.", 200, )
 
 
+@app.route("/clean_sensors_data", methods=["GET"])
+def clean_sensors():
+    sensorsData.delete()
+    return make_response("Clean: 'success'", 200, {'Content-Type': 'application/json'})
+
+
 @app.route("/get_sensors", methods=["GET"])
 def get_sensors():
     try:
