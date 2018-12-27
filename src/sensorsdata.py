@@ -16,12 +16,12 @@ class SensorsData:
         keys = self.redis.scan_iter('sensors_*')
         self.redis.delete(*keys)
 
-    def scan_keys(self, offset=0, limit=100, pattern="sensors*"):
+    def scan_keys(self, pattern, min_count=100):
         result = []
-        cur, keys = self.redis.scan(cursor=offset, match=pattern, count=limit)
+        cur, keys = self.redis.scan(cursor=0, match=pattern, count=min_count)
         result.extend(keys)
         while cur != 0:
-            cur, keys = self.redis.scan(cursor=cur, match=pattern, count=limit)
+            cur, keys = self.redis.scan(cursor=cur, match=pattern, count=min_count)
             result.extend(keys)
 
         return result
@@ -29,7 +29,8 @@ class SensorsData:
     def get(self, offset, limit, pattern):
         try:
             result = {}
-            for key in self.scan_keys(offset, limit, pattern):
+            keys = self.scan_keys(pattern=pattern)[offset:limit]
+            for key in keys:
                 result[key] = (self.redis.hgetall(key))
 
             return result
