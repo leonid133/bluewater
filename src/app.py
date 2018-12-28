@@ -193,7 +193,7 @@ def get_sensors_latest():
         offset = request.args.get('offset', 0)
         limit = request.args.get('limit', 100)
         pattern = request.args.get('pattern', "sensors*")
-        data = sensorsData.get(offset=offset, limit=limit, pattern=pattern)
+        data = sensorsData.get_latest(offset=offset, limit=limit, pattern=pattern)
         return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
     except Exception as e:
         return make_response("oops: %s" % sys.exc_info()[0], 200, {'Content-Type': 'application/json'})
