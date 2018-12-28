@@ -187,6 +187,18 @@ def get_sensors():
         return make_response("oops: %s" % sys.exc_info()[0], 200, {'Content-Type': 'application/json'})
 
 
+@app.route("/get_sensors_latest", methods=["GET"])
+def get_sensors_latest():
+    try:
+        offset = request.args.get('offset', 0)
+        limit = request.args.get('limit', 100)
+        pattern = request.args.get('pattern', "sensors*")
+        data = sensorsData.get(offset=offset, limit=limit, pattern=pattern)
+        return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
+    except Exception as e:
+        return make_response("oops: %s" % sys.exc_info()[0], 200, {'Content-Type': 'application/json'})
+
+
 @app.route("/get_info", methods=["GET"])
 def get_info():
     global last_state

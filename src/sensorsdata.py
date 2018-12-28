@@ -37,3 +37,15 @@ class SensorsData:
             return result
         except Exception as e:
             return ['error', e.message]
+
+    def get_latest(self, offset, limit, pattern):
+        try:
+            result = {}
+            keys = list(reversed(sorted(self.scan_keys(pattern=pattern))))[int(offset):(int(offset)+int(limit))]
+
+            for key in keys:
+                result[key] = (self.redis.hgetall(key))
+
+            return result
+        except Exception as e:
+            return ['error', e.message]
