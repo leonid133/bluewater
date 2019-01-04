@@ -10,6 +10,7 @@ from flask import Flask, request, make_response, render_template
 import requests
 import sys
 from sensorsdata import SensorsData
+import time
 
 pyBot = bot.Bot()
 slack = pyBot.client
@@ -141,25 +142,29 @@ def sensor():
         data = json.loads(request.data)
         status = int(data.get('status', 0))
         ident = int(data.get('sec', 0))
-        if ((busy_count > 3600) or (free_count > 20) or (status is 1 and last_state is 0 and busy_count > 5)) and last_id < ident:
-            print "removing from queue because (last_id=%d && id=%d), (last_state=%d && status=%d)" % (last_id, ident, last_state, status)
-            last_id = ident
-            channel = queue.remove()
-            message = "go go go"
-            pyBot.direct_message(message, channel)
-            last_free_count = free_count
-            last_busy_count = busy_count
-            free_count = 0
-            busy_count = 0
-            last_state = status
-        elif status is 1 and last_state is 1 and last_id < ident:
-            free_count = free_count + 1
-            last_state = status
-        elif status is 0 and last_state is 0 and last_id < ident:
-            busy_count = busy_count + 1
-            last_state = status
-        elif last_id < ident:
-            last_state = status
+        now = int(time.time())
+        if ident > now:
+            print 'time in hardware > now'
+        else:
+            if ((busy_count > 3600) or (free_count > 20) or (status is 1 and last_state is 0 and busy_count > 5)) and last_id < ident:
+                print "removing from queue because (last_id=%d && id=%d), (last_state=%d && status=%d)" % (last_id, ident, last_state, status)
+                last_id = ident
+                channel = queue.remove()
+                message = "go go go"
+                pyBot.direct_message(message, channel)
+                last_free_count = free_count
+                last_busy_count = busy_count
+                free_count = 0
+                busy_count = 0
+                last_state = status
+            elif status is 1 and last_state is 1 and last_id < ident:
+                free_count = free_count + 1
+                last_state = status
+            elif status is 0 and last_state is 0 and last_id < ident:
+                busy_count = busy_count + 1
+                last_state = status
+            elif last_id < ident:
+                last_state = status
 
         sensorsData.append(sec=data.get('sec', 0), data=data)
 
