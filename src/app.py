@@ -139,8 +139,8 @@ def sensor():
     global last_busy_count
     try:
         data = json.loads(request.data)
-        status = data.get('status', 0)
-        ident = data.get('sec', 0)
+        status = int(data.get('status', 0))
+        ident = int(data.get('sec', 0))
         if ((busy_count > 3600) or (free_count > 20) or (status is 1 and last_state is 0 and busy_count > 5)) and last_id < ident:
             print "removing from queue because (last_id=%d && id=%d), (last_state=%d && status=%d)" % (last_id, ident, last_state, status)
             last_id = ident
@@ -161,7 +161,7 @@ def sensor():
         elif last_id < ident:
             last_state = status
 
-        sensorsData.append(sec=data.get('sec', 0), usec=data.get('usec', 0), data=data)
+        sensorsData.append(sec=data.get('sec', 0), data=data)
 
     except Exception as e:
         print 'error', sys.exc_info()[0]

@@ -8,8 +8,8 @@ class SensorsData:
     def __init__(self):
         self.redis = redis.Redis(host='bluewater-redis-master', port=6379)
 
-    def append(self, sec, usec, data):
-        key = "sensors_%s_%s" % (sec, usec)
+    def append(self, sec, data):
+        key = "sensors_%s" % (sec)
         self.redis.hmset(key, data)
 
     def delete(self):
