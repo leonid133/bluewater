@@ -11,6 +11,7 @@ import requests
 import sys
 from sensorsdata import SensorsData
 import time
+from datetime import datetime
 
 pyBot = bot.Bot()
 slack = pyBot.client
@@ -142,7 +143,8 @@ def sensor():
         data = json.loads(request.data)
         status = int(data.get('status', 0))
         ident = int(data.get('sec', 0))
-        now = int(time.time())
+        now = int(datetime.utcnow().strftime("%s"))
+
         if ident > now:
             print 'time in hardware > now'
         else:
@@ -219,7 +221,9 @@ def get_info():
         'free_count': free_count,
         'busy_count': busy_count,
         'last_free_count': last_free_count,
-        'last_busy_count': last_busy_count
+        'last_busy_count': last_busy_count,
+        'server_time': int(time.time()),
+        'utc_server_time': int(datetime.utcnow().strftime("%s"))
     }
 
     return make_response(json.dumps(info_msg), 200, {'Content-Type': 'application/json'})
