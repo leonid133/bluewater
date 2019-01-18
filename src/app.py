@@ -31,7 +31,8 @@ app = Flask(__name__)
 def book(user_id, channel):
     global queue
     if channel in queue.get():
-        message = "<@%s> You are pidor and you are already in the queue!" % user_id
+        st = queue.get_my_status(channel)
+        message = "<@%s> You are pidor and you are already in the queue! You're the %s" % (user_id, st)
     else:
         queue.add(channel)
         st = queue.get_my_status(channel)
@@ -74,17 +75,18 @@ def _event_handler(event_type, slack_event):
         in_message = {
             "msg": [slack_event.get("event", {}).get("text", "")]
         }
-        ml_request = requests.post(pyBot.nlp_http, json=in_message)
-
-        intent_labels = {
-            'Book': book,
-            'CheckStatus': check_status,
-            'GoToHell': go_to_hell,
-            'OMG': omg,
-            'Other': other
-        }
-        dialect = intent_labels.get(ml_request.json().get("intent")[0])
-        dialect(user_id, channel)
+        # ml_request = requests.post(pyBot.nlp_http, json=in_message)
+        #
+        # intent_labels = {
+        #     'Book': book,
+        #     'CheckStatus': check_status,
+        #     'GoToHell': go_to_hell,
+        #     'OMG': omg,
+        #     'Other': other
+        # }
+        # dialect = intent_labels.get(ml_request.json().get("intent")[0])
+        # dialect(user_id, channel)
+        book(user_id, channel)
 
         who_whanna_go = {
             'token': token,
