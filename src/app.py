@@ -69,7 +69,7 @@ def go_to_hell(user_id, channel):
 
 def omg(user_id, channel):
     #message = "<@%s> OMG! :tada:" % user_id
-    message = random.choice(omg) % (user_id)
+    message = random.choice(oh_my_god) % (user_id)
     pyBot.direct_message(message, channel)
 
 
