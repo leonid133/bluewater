@@ -12,6 +12,7 @@ import sys
 from sensorsdata import SensorsData
 import time
 from datetime import datetime
+import random
 
 pyBot = bot.Bot()
 slack = pyBot.client
@@ -27,16 +28,24 @@ sensorsData = SensorsData()
 
 app = Flask(__name__)
 
+already_in_queue = ["<@%s> ты уже %s в очереди", "<@%s> заебал, ты уже %s очереди", "<@%s> чё доебался, ты %s"]
+in_queue = ["<@%s> аеее! ты %s в очереди", "<@%s> заебись! ты в очереди!"]
+not_in_queue = ["<@%s> чё? ты не записан", "<@%s> хули ты пишешь? ты не в очереди!"]
+gth = ["<@%s> Ебись", "<@%s> Ты ебанулся?", "<@%s> ты ебанулся пидор?!?!?", "<@%s> Хуй положи на кактус, вдруг отпустит", "<@%s> вон туда сходи, хуйли сюда стремишься", "<@%s> Ты мне ещё предложи кого-то из двух годичной очереди позвать", "<@%s> у меня такое гавно как ты толчки не расчитаны", "<@%s> не для тебя я свои очереди готовила", "<@%s> не для тебя толчки драили, пидор", "ту-ту-ту, хуй во рту", "<@%s> блогаславляю тебя на вечное воздержание", "<@%s> Изящно на хуй иди", "<@%s> Не ебет, жди", "<@%s> Бахни пока https://rt.pornhub.com/video/search?search=pornohub", "<@%s> тут таких как ты до ебени", "<@%s> Донат решает, 5 баксов и ты в топе", "<@%s> 10 тыщ пыдыщ и ты идешь на хер", "<@%s> Ебанутый штоли?", "<@%s> Засунь свою толерантность в жопу и ебись", "<@%s> Вот охотники за приведениями терпели, и ты терпи", "<@%s> Ебашь да не наебашь в шортики", "<@%s> лучше бы обувь переодел", "<@%s> Фриидом кам, но не скоро"]
+oh_my_god = ["<@%s> Ты заебал, блять, терпи сука", "<@%s> Че началось, то! терпи бля", "<@%s> Терпи нормально, нормально будет", "<@%s> прости сука, все будет, но позже", "<@%s> Да мне похуй, терпи!"]
+hz = ["<@%s> Я ни хуя не понял", "<@%s> Чё те надо, заебал?", "<@%s> Говори нормально, уёбок"]
 
 def book(user_id, channel):
     global queue
     if channel in queue.get():
         st = queue.get_my_status(channel)
-        message = "<@%s> You are pidor and you are already in the queue! You're the %s" % (user_id, st)
+        #message = "<@%s> You are pidor and you are already in the queue! You're the %s" % (user_id, st)
+        message = random.choice(already_in_queue) % (user_id, st)
     else:
         queue.add(channel)
         st = queue.get_my_status(channel)
-        message = "<@%s> You booked! You're the %d's in the queue :tada:" % (user_id, st)
+        #message = "<@%s> You booked! You're the %d's in the queue :tada:" % (user_id, st)
+        message = random.choice(in_queue) % (user_id, st)
     pyBot.direct_message(message, channel)
 
 
@@ -44,24 +53,29 @@ def check_status(user_id, channel):
     global queue
     st = queue.get_my_status(channel)
     if st != -1:
-        message = "<@%s> You're the %s in the queue :tada:" % (user_id, st)
+        #message = "<@%s> You're the %s in the queue :tada:" % (user_id, st)
+        message = random.choice(in_queue) % (user_id, st)
     else:
-        message = "<@%s> You're not in the queue (because you are pidor)" % user_id
+        #message = "<@%s> You're not in the queue (because you are pidor)" % user_id
+        message = random.choice(not_in_queue) % (user_id, st)
     pyBot.direct_message(message, channel)
 
 
 def go_to_hell(user_id, channel):
-    message = "<@%s> Fuck You! Nu ty i pidor! :tada:" % user_id
+    #message = "<@%s> Fuck You! Nu ty i pidor! :tada:" % user_id
+    message = random.choice(gth) % (user_id)
     pyBot.direct_message(message, channel)
 
 
 def omg(user_id, channel):
-    message = "<@%s> OMG! :tada:" % user_id
+    #message = "<@%s> OMG! :tada:" % user_id
+    message = random.choice(omg) % (user_id)
     pyBot.direct_message(message, channel)
 
 
 def other(user_id, channel):
-    message = "<@%s> Nu ya hui znaet :tada:" % user_id
+    #message = "<@%s> Nu ya hui znaet :tada:" % user_id
+    message = random.choice(hz) % (user_id)
     pyBot.direct_message(message, channel)
 
 
