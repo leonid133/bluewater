@@ -75,18 +75,31 @@ def _event_handler(event_type, slack_event):
         in_message = {
             "msg": [slack_event.get("event", {}).get("text", "")]
         }
-        # ml_request = requests.post(pyBot.nlp_http, json=in_message)
-        #
-        # intent_labels = {
-        #     'Book': book,
-        #     'CheckStatus': check_status,
-        #     'GoToHell': go_to_hell,
-        #     'OMG': omg,
-        #     'Other': other
-        # }
-        # dialect = intent_labels.get(ml_request.json().get("intent")[0])
-        # dialect(user_id, channel)
-        book(user_id, channel)
+        try:
+            ml_request = requests.post(pyBot.nlp_http, json=in_message)
+
+            # ml_request example = {"input_length": [5], "confidences": [
+            #     [0.9999997615814209, 9.267279998947942E-11, 1.517895698022187E-9, 2.1478415135334217E-7,
+            #      1.9579935894853406E-8, 2.6716921792849062E-14]],
+            #  "intents": ["Book", "CheckStatus", "GoToHell", "OMG", "Fail", "Other"]}
+
+            intent_labels = {
+                'Book': book,
+                'CheckStatus': check_status,
+                'GoToHell': go_to_hell,
+                'OMG': omg,
+                'Other': other
+            }
+
+            confidences = ml_request.json().get('confidences')[0]
+            max_confidence = max(confidences)
+            index_max_confidence = [i for i, j in enumerate(confidences) if j == max_confidence][0]
+            intent = ml_request.json().get('intents')[index_max_confidence]
+
+            dialect = intent_labels.get(intent)
+            dialect(user_id, channel)
+        except Exception:
+            book(user_id, channel)
 
         who_whanna_go = {
             'token': token,
