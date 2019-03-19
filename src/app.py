@@ -12,6 +12,7 @@ import sys
 from sensorsdata import SensorsData
 import time
 from datetime import datetime
+import math
 import random
 
 pyBot = bot.Bot()
@@ -107,12 +108,22 @@ def _event_handler(event_type, slack_event):
 
             confidences = ml_request.json().get('confidences')[0]
             max_confidence = max(confidences)
-            index_max_confidence = [i for i, j in enumerate(confidences) if j == max_confidence][0]
-            intent = ml_request.json().get('intents')[index_max_confidence]
 
-            dialect = intent_labels.get(intent)
+            n = float(len(confidences))
+            x_median = math.fsum(confidences) / n
+            D = math.fsum([math.pow(x - x_median, 2.0) for x in confidences]) / n
+            sigma = math.sqrt(D)
+            print sigma, D, x_median, n
+            if sigma < 0.11:
+                dialect = intent_labels.get(other)
+            else:
+                index_max_confidence = [i for i, j in enumerate(confidences) if j == max_confidence][0]
+                intent = ml_request.json().get('intents')[index_max_confidence]
+                dialect = intent_labels.get(intent)
+
             dialect(user_id, channel)
-        except Exception:
+        except Exception as error_message:
+            print error_message
             book(user_id, channel)
 
         who_whanna_go = {
