@@ -24,7 +24,7 @@ class Bot(object):
         self.client = SlackClient(slack_bot_token)
         # self.client = SlackClient("")
         self.messages = {}
-        self.nlp_http = os.environ.get("NLP_HTTP_URL", 'https://dev.k8s.hydrosphere.io/gateway/applications/bluewater-nlp/bluewater-nlp')
+        self.nlp_http = os.environ.get("NLP_HTTP_URL", 'https://dev.k8s.hydrosphere.io/gateway/application/bluewater')
 
     def auth(self, code):
         auth_response = self.client.api_call(
