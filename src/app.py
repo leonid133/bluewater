@@ -14,6 +14,7 @@ import time
 from datetime import datetime
 import math
 import random
+import os, sys
 
 pyBot = bot.Bot()
 slack = pyBot.client
@@ -80,6 +81,12 @@ def other(user_id, channel):
     pyBot.direct_message(message, channel)
 
 
+def _save_to_file(ml_dict, path):
+    with open(path, "a+") as f:
+        f.write(json.dumps(ml_dict))
+        f.write('\n')
+
+
 def _event_handler(event_type, slack_event):
     team_id = slack_event["team_id"]
     user_id = slack_event["event"].get("user")
@@ -115,13 +122,20 @@ def _event_handler(event_type, slack_event):
             sigma = math.sqrt(D)
             print sigma, D, x_median, n
             if sigma < 0.11:
-                dialect = intent_labels.get(other)
+                intent = 'Other'
             else:
                 index_max_confidence = [i for i, j in enumerate(confidences) if j == max_confidence][0]
                 intent = ml_request.json().get('intents')[index_max_confidence]
-                dialect = intent_labels.get(intent)
 
+            dialect = intent_labels.get(intent)
             dialect(user_id, channel)
+
+            _save_to_file({
+                "in_message": in_message,
+                "ml_request": ml_request.json(),
+                "intent": intent
+            }, "/data/bluewater_ml_messages.json")
+
         except Exception as error_message:
             print error_message
             book(user_id, channel)
