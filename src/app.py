@@ -162,7 +162,6 @@ def get_queue():
 def welcome():
     global last_id
     last_id = 0
-    sensorsData.delete()
     return make_response("Hey-hey!")
 
 
@@ -223,7 +222,7 @@ def sensor():
             elif last_id < ident:
                 last_state = status
 
-        sensorsData.append(sec=data.get('sec', 0), data=data)
+        # sensorsData.append(sec=data.get('sec', 0), data=data)
 
     except Exception as e:
         print 'error', sys.exc_info()[0]
