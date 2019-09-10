@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 import redis
 import json
-from Queue import Queue
 from threading import Lock
 
 class DummyToiletQueue:
 
     def __init__(self):
         # self.redis = redis.Redis(host='bluewater-redis-master', port=6379)
-        self.queue = Queue()
         self.lock = Lock()
         self.list = list()
 
@@ -18,7 +16,6 @@ class DummyToiletQueue:
         # self.__set(q)
         self.lock.acquire()
         try:
-            self.queue.put(id)
             self.list.append(id)
         finally:
             self.lock.release()
@@ -45,8 +42,7 @@ class DummyToiletQueue:
         #     return -1
         self.lock.acquire()
         try:
-            id = self.queue.get(False)
-            self.list.pop(0)
+            id = self.list.pop(0)
             if id:
                 return id
             return -1
