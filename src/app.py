@@ -130,11 +130,11 @@ def _event_handler(event_type, slack_event):
             dialect = intent_labels.get(intent)
             dialect(user_id, channel)
 
-            _save_to_file({
-                "in_message": in_message,
-                "ml_request": ml_request.json(),
-                "intent": intent
-            }, "/data/bluewater_ml_messages.json")
+            # _save_to_file({
+            #     "in_message": in_message,
+            #     "ml_request": ml_request.json(),
+            #     "intent": intent
+            # }, "/data/bluewater_ml_messages.json")
 
         except Exception as error_message:
             print error_message
