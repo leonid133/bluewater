@@ -234,8 +234,11 @@ def sensor():
 
 @app.route("/clean_sensors_data", methods=["GET"])
 def clean_sensors():
-    sensorsData.delete()
-    return make_response("Clean: 'success'", 200, {'Content-Type': 'application/json'})
+    try:
+        sensorsData.delete()
+        return make_response("Clean: 'success'", 200, {'Content-Type': 'application/json'})
+    except Exception as e:
+        return make_response("oops: %s" % sys.exc_info()[0], 200, {'Content-Type': 'application/json'})
 
 
 @app.route("/get_sensors", methods=["GET"])
@@ -271,19 +274,20 @@ def get_info():
     global last_free_count
     global last_busy_count
 
-    info_msg = {
-        'last_state': last_state,
-        'last_id': last_id,
-        'free_count': free_count,
-        'busy_count': busy_count,
-        'last_free_count': last_free_count,
-        'last_busy_count': last_busy_count,
-        'server_time': int(time.time()),
-        'utc_server_time': int(datetime.utcnow().strftime("%s"))
-    }
-
-    return make_response(json.dumps(info_msg), 200, {'Content-Type': 'application/json'})
-
+    try:
+        info_msg = {
+            'last_state': last_state,
+            'last_id': last_id,
+            'free_count': free_count,
+            'busy_count': busy_count,
+            'last_free_count': last_free_count,
+            'last_busy_count': last_busy_count,
+            'server_time': int(time.time()),
+            'utc_server_time': int(datetime.utcnow().strftime("%s"))
+        }
+        return make_response(json.dumps(info_msg), 200, {'Content-Type': 'application/json'})
+    except Exception as e:
+        return make_response("oops: %s" % sys.exc_info()[0], 200, {'Content-Type': 'application/json'})
 
 @app.route("/listening", methods=["GET", "POST"])
 def hears():
