@@ -47,6 +47,8 @@ class DummyToiletQueue:
             if id:
                 return id
             return -1
+        except Exception as e:
+            return -1
         finally:
             self.lock.release()
 
@@ -58,8 +60,8 @@ class DummyToiletQueue:
     # def __set(self, q):
     #     self.redis.set('state', json.dumps(q))
     #
-    # def get(self):
-    #     try:
-    #         return json.loads(self.redis.get('state'))
-    #     except:
-    #         return []
+    def get(self):
+        try:
+            return json.loads(self.queue.qsize())
+        except:
+            return []
