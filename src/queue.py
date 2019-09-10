@@ -10,6 +10,7 @@ class DummyToiletQueue:
         # self.redis = redis.Redis(host='bluewater-redis-master', port=6379)
         self.queue = Queue()
         self.lock = Lock()
+        self.list = list()
 
     def add(self, id):
         # q = self.get()
@@ -18,6 +19,7 @@ class DummyToiletQueue:
         self.lock.acquire()
         try:
             self.queue.put(id)
+            self.list.append(id)
         finally:
             self.lock.release()
 
@@ -44,6 +46,7 @@ class DummyToiletQueue:
         self.lock.acquire()
         try:
             id = self.queue.get(False)
+            self.list.pop(0)
             if id:
                 return id
             return -1
@@ -55,13 +58,13 @@ class DummyToiletQueue:
     def size(self):
         # q = self.redis.get()
         # return len(q)
-        return self.queue.qsize()
+        return len(self.list)
 
     # def __set(self, q):
     #     self.redis.set('state', json.dumps(q))
     #
     def get(self):
         try:
-            return json.loads(self.queue.qsize())
+            return json.loads(json.dumps(self.list))
         except:
             return []
