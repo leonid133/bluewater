@@ -14,7 +14,7 @@ import time
 from datetime import datetime
 import math
 import random
-import os, sys
+import os
 
 pyBot = bot.Bot()
 slack = pyBot.client
