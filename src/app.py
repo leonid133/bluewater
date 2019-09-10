@@ -162,6 +162,7 @@ def get_queue():
 def welcome():
     global last_id
     last_id = 0
+    sensorsData.delete()
     return make_response("Hey-hey!")
 
 
