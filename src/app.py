@@ -199,7 +199,7 @@ def sensor():
         ident = int(data.get('sec', 0))
         now = int(datetime.utcnow().strftime("%s"))
 
-        if ident > (now+20):
+        if ident > (now+150):
             print 'time in hardware > now'
         else:
             if ((busy_count > 3600) or (free_count > 20) or (status is 1 and last_state is 0 and busy_count > 5)) and last_id < ident:
@@ -221,6 +221,8 @@ def sensor():
                 last_state = status
             elif last_id < ident:
                 last_state = status
+            else:
+                pass
 
         # sensorsData.append(sec=data.get('sec', 0), data=data)
 
